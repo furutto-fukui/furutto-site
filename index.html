@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bar FURUTTO</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    body {
+      font-family: "Hiragino Mincho ProN", "Yu Mincho", serif;
+      background: #f4efe8;
+      color: #2f241d;
+      overflow: hidden;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    /* ===== ローディング ===== */
+    .loader {
+      position: fixed;
+      inset: 0;
+      background: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity 1.2s ease, transform 1.2s ease;
+    }
+
+    .loader.fade-out {
+      opacity: 0;
+      transform: translateY(-10px);
+      pointer-events: none;
+    }
+
+    .loader-logo {
+      animation: logoFade 2s ease;
+    }
+
+    .logo-image {
+      width: 300px;
+      height: auto;
+      display: block;
+      opacity: 0.95;
+    }
+
+    .top-logo-image {
+      display: block;
+      width: 300px;
+      height: auto;
+      margin-top: -40px;
+      margin-left: -25px;
+    }
+
+    .mobile-top-logo {
+      width: 200px;
+      height: auto;
+      display: block;
+      margin: 0;
+      transform: translate(-23px, -20px);
+    }
+
+    @keyframes logoFade {
+      0% {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ===== PCレイアウト ===== */
+    .pc-layout {
+      display: grid;
+      grid-template-columns: 28% 44% 28%;
+      height: 100vh;
+      width: 100%;
+    }
+
+    .left-panel,
+    .center-panel {
+      height: 100vh;
+      position: relative;
+    }
+
+    .left-panel {
+      background: #f7f3ed;
+      border-right: 1px solid rgba(47, 36, 29, 0.08);
+      padding: 28px 24px 28px 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .left-top {
+      display: flex;
+      align-items: flex-start;
+    }
+
+    .left-bottom {
+      padding: 0 4px 10px 4px;
+      max-width: 320px;
+    }
+
+    .left-copy {
+      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+      font-size: clamp(2.8rem, 5.8vw, 5.4rem);
+      line-height: 0.92;
+      letter-spacing: -0.04em;
+      font-weight: 700;
+      color: #11100f;
+      margin: 0;
+    }
+
+    .left-copy-sub {
+      margin-top: 26px;
+      font-size: 1rem;
+      line-height: 1.95;
+      letter-spacing: 0.12em;
+      color: #3e3128;
+    }
+
+    .center-panel {
+      overflow: hidden;
+      background: #d8d1c8;
+    }
+
+    .slideshow {
+      position: absolute;
+      inset: 0;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center center;
+      opacity: 0;
+      animation: fade 18s infinite;
+      transition: opacity 2s ease;
+      transform: scale(1.02);
+    }
+
+    .slide:nth-child(1) {
+      background-image: url("img1.jpg");
+      animation-delay: 0s;
+    }
+
+    .slide:nth-child(2) {
+      background-image: url("img2.jpg");
+      animation-delay: 6s;
+    }
+
+    .slide:nth-child(3) {
+      background-image: url("img3.jpg");
+      animation-delay: 12s;
+    }
+
+    @keyframes fade {
+      0% { opacity: 0; }
+      15% { opacity: 1; }
+      45% { opacity: 1; }
+      70% { opacity: 0; }
+      100% { opacity: 0; }
+    }
+
+    .center-panel::after,
+    .mobile-image::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.20), rgba(0, 0, 0, 0.10)),
+        rgba(64, 42, 25, 0.10);
+      pointer-events: none;
+    }
+
+    .center-caption {
+      position: absolute;
+      left: 28px;
+      bottom: 26px;
+      z-index: 2;
+      color: rgba(255, 250, 243, 0.9);
+      font-size: 0.85rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+    }
+
+    /* ===== 右スクロール部分 ===== */
+    .right-panel {
+      height: 100vh;
+      overflow-y: auto;
+      background: #f7f3ed;
+      border-left: 1px solid rgba(47, 36, 29, 0.08);
+      padding: 38px 42px 90px 42px;
+      scroll-behavior: smooth;
+    }
+
+    .right-panel::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .right-panel::-webkit-scrollbar-thumb {
+      background: rgba(47, 36, 29, 0.18);
+      border-radius: 999px;
+    }
+
+    .right-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      margin-top: 0;
+      margin-bottom: 72px;
+      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+      font-size: 0.88rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .right-nav a {
+      display: inline-block;
+      width: fit-content;
+      color: #201914;
+    }
+
+    .right-nav a:hover,
+    .icon-link:hover {
+      opacity: 0.65;
+    }
+
+    .bullet {
+      margin-right: 8px;
+    }
+
+    .right-section {
+      padding: 42px 0;
+      border-top: 1px solid rgba(47, 36, 29, 0.10);
+    }
+
+    .right-section:first-of-type {
+      border-top: none;
+      padding-top: 0;
+    }
+
+    .section-label {
+      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      margin-bottom: 18px;
+      color: #6a5749;
+      text-transform: uppercase;
+    }
+
+    .section-title {
+      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+      font-size: 1.65rem;
+      line-height: 1.55;
+      letter-spacing: -0.01em;
+      margin: 0 0 20px 0;
+      font-weight: 700;
+      color: #16120f;
+      max-width: 11em;
+    }
+
+    .section-text {
+      font-size: 0.98rem;
+      line-height: 2.05;
+      color: #4b3a2f;
+      margin: 0;
+      max-width: 27em;
+    }
+
+    /* ===== MENU ===== */
+    .menu-list {
+      display: flex;
+      flex-direction: column;
+      margin-top: 8px;
+    }
+
+    .menu-item {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding: 16px 0 18px 0;
+      border-bottom: 1px solid #f4efe8;
+    }
+
+    .menu-item:first-child {
+      border-top: 1px solid #f4efe8;
+    }
+
+    .menu-name {
+      font-size: 0.98rem;
+      line-height: 1.8;
+      color: #211915;
+      letter-spacing: 0.03em;
+    }
+
+    .menu-price {
+      font-size: 0.86rem;
+      color: #6a5749;
+      letter-spacing: 0.08em;
+      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+      text-transform: uppercase;
+    }
+
+    .menu-notes {
+      margin-top: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      font-size: 0.70rem;
+      line-height: 1.6;
+      color: #4b3a2f;
+      max-width: 28em;
+    }
+
+    .menu-note-small {
+      font-size: inherit;
+      line-height: inherit;
+    }
+
+    /* ===== INFO ===== */
+    .info-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 4px;
+      max-width: 28em;
+    }
+
+    .info-item {
+      border-bottom: 1px solid #f4efe8;
+      padding-bottom: 16px;
+    }
+
+    .info-head {
+      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+      font-size: 0.72rem;
+      letter-spacing: 0.16em;
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: #6a5749;
+      text-transform: uppercase;
+    }
+
+    .info-body {
+      font-size: 0.98rem;
+      line-height: 1.95;
+      color: #2f241d;
+    }
+
+    .icon-links {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-top: 12px;
+    }
+
+    .icon-link {
+      width: 35px;
+      height: 35px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #11100f;
+    }
+
+    .icon-link svg {
+      width: 40px;
+      height: 40px;
+      display: block;
+      fill: currentColor;
+    }
+
+    /* ===== スマホ ===== */
+    .mobile-layout {
+      display: none;
+    }
+
+    @media (max-width: 1100px) {
+      .pc-layout {
+        grid-template-columns: 32% 36% 32%;
+      }
+
+      .left-copy {
+        font-size: clamp(2.2rem, 5vw, 4rem);
+      }
+    }
+
+    @media (max-width: 860px) {
+      html, body {
+        height: auto;
+      }
+
+      body {
+        overflow: auto;
+      }
+
+      .pc-layout,
+      .scroll-note {
+        display: none;
+      }
+
+      .mobile-layout {
+        display: block;
+        background: #f7f3ed;
+      }
+
+      .mobile-hero {
+        padding: 0 20px 0 20px;
+        background: #f7f3ed;
+      }
+
+      .mobile-brand {
+       margin-top: 12px;
+       margin-bottom: 28px;
+       padding-left: 10px;
+      }
+
+      .mobile-copy-wrap {
+        margin-bottom: 28px;
+      }
+
+      .mobile-copy {
+        font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+        font-size: clamp(2.8rem, 12vw, 4.4rem);
+        line-height: 0.93;
+        letter-spacing: -0.05em;
+        font-weight: 700;
+        color: #11100f;
+        margin: 0;
+      }
+
+      .mobile-copy-sub {
+        margin-top: 20px;
+        font-size: 0.92rem;
+        line-height: 1.9;
+        letter-spacing: 0.08em;
+        color: #3e3128;
+      }
+
+      .mobile-image {
+        position: relative;
+        width: 100%;
+        height: 58vh;
+        min-height: 420px;
+        overflow: hidden;
+      }
+
+      .mobile-image .slideshow {
+        position: absolute;
+        inset: 0;
+      }
+
+      .mobile-content {
+        padding: 34px 20px 54px 20px;
+      }
+
+      .right-nav {
+        margin-top: 0;
+        margin-bottom: 52px;
+        gap: 16px;
+        font-size: 0.82rem;
+      }
+
+      .section-title {
+        font-size: 1.4rem;
+        line-height: 1.55;
+        margin: 0 0 18px 0;
+        max-width: 100%;
+      }
+
+      .section-text,
+      .info-body,
+      .menu-name,
+      .menu-price {
+        font-size: 0.94rem;
+      }
+
+      .section-text {
+        line-height: 1.95;
+      }
+
+      .right-section {
+        padding: 34px 0;
+      }
+
+      .icon-links {
+        gap: 16px;
+      }
+
+      .icon-link svg {
+        width: 34px;
+        height: 34px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="loader" id="loader">
+    <div class="loader-logo">
+      <img src="logo.png" alt="FURUTTO logo" class="logo-image">
+    </div>
+  </div>
+
+  <!-- PC -->
+  <div class="pc-layout">
+    <aside class="left-panel">
+      <div class="left-top">
+        <img src="logo.png" alt="FURUTTO logo" class="top-logo-image">
+      </div>
+
+      <div class="left-bottom">
+        <h1 class="left-copy">
+          Enjoy<br>
+          Fruits,<br>
+          Slowly.
+        </h1>
+        <div class="left-copy-sub">
+          今夜はフルーツを楽しむ、<br>
+          少し贅沢な時間。
+        </div>
+      </div>
+    </aside>
+
+    <main class="center-panel">
+      <div class="slideshow">
+        <div class="slide"></div>
+        <div class="slide"></div>
+        <div class="slide"></div>
+      </div>
+      <div class="center-caption">Fruit Cafe & Bar</div>
+    </main>
+
+    <section class="right-panel">
+      <nav class="right-nav">
+        <a href="#pc-top">Top</a>
+        <a href="#pc-concept">Concept</a>
+        <a href="#pc-menu">Menu</a>
+        <a href="#pc-info">Info</a>
+        <a href="#pc-visit">Visit</a>
+      </nav>
+
+      <div class="right-section" id="pc-top">
+        <div class="section-label">Top</div>
+        <h2 class="section-title">
+          今日は、果実な気分。
+        </h2>
+        <p class="section-text">
+          Bar FURUTTOは、旬の果実を使った<br>
+          一杯とともに、楽しく過ごせる夜を<br>
+          お届けします。
+        </p>
+      </div>
+
+      <div class="right-section" id="pc-concept">
+        <div class="section-label">Concept</div>
+        <h2 class="section-title">
+          高級感があるのに、<br>
+          少しほっとする場所。
+        </h2>
+        <p class="section-text">
+          季節の果実と一杯を、ゆっくり味わう<br>
+          夜カフェのような時間を。気取らず<br>
+          上質に過ごせる時間を目指しています。
+        </p>
+      </div>
+
+      <div class="right-section" id="pc-menu">
+        <div class="section-label">Menu</div>
+
+        <div class="menu-list">
+          <div class="menu-item">
+            <div class="menu-name">いちごとラズベリー</div>
+            <div class="menu-price">C ¥1,700 / M ¥1,700</div>
+          </div>
+
+          <div class="menu-item">
+            <div class="menu-name">バナナと黒糖きなこ</div>
+            <div class="menu-price">C ¥1,500 / M ¥1,500</div>
+          </div>
+
+          <div class="menu-item">
+            <div class="menu-name">アボカドとコーヒー</div>
+            <div class="menu-price">C ¥1,500 / M ¥1,500</div>
+          </div>
+
+          <div class="menu-item">
+            <div class="menu-name">泡のソルティードッグ</div>
+            <div class="menu-price">C ¥1,500 / M ¥1,500</div>
+          </div>
+
+          <div class="menu-item">
+            <div class="menu-name">リンゴとマロン</div>
+            <div class="menu-price">C ¥1,600</div>
+          </div>
+        </div>
+
+        <div class="menu-notes">
+          <div>※C COCKTAIL（カクテル）<br>※M MOCKTAIL（ノンアルコール）</div>
+          <div>※その他アルコール、ソフトドリンクもございます。<br>スタッフまでお問い合わせください。</div>
+          <div class="menu-note-small">※季節によってメニューが変わりますのでご了承ください。</div>
+        </div>
+      </div>
+
+      <div class="right-section" id="pc-info">
+        <div class="section-label">Info</div>
+        <div class="info-list">
+          <div class="info-item">
+            <div class="info-head">Store Name</div>
+            <div class="info-body">Bar FURUTTO</div>
+          </div>
+
+          <div class="info-item">
+            <div class="info-head">Open</div>
+            <div class="info-body">20:00〜4:00</div>
+          </div>
+
+          <div class="info-item">
+            <div class="info-head">Closed</div>
+            <div class="info-body">日曜</div>
+          </div>
+
+          <div class="info-item">
+            <div class="info-head">Address</div>
+            <div class="info-body">〒910-0023</div>
+            <div class="info-body">福井県福井市順化２丁目２１−１８<br>加賀テナント C号</div>
+          </div>
+
+          <div class="info-item">
+            <div class="info-head">Phone</div>
+            <div class="info-body">080-4560-6103</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="right-section" id="pc-visit">
+        <div class="section-label">Visit</div>
+        <h2 class="section-title">
+          果実とともに過ごす、<br>
+          少しだけ特別な夜を。
+        </h2>
+
+        <p class="section-text">
+          ご来店の際はGoogleマップまたはInstagramからご確認ください。
+        </p>
+
+        <div class="icon-links">
+          <a class="icon-link" href="https://maps.app.goo.gl/mGgB4Nc37iKYBHpp7" target="_blank" rel="noopener noreferrer" aria-label="Google Maps">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 2C8.13 2 5 5.03 5 8.77c0 4.99 5.68 11.63 6.05 12.05a1.25 1.25 0 0 0 1.9 0C13.32 20.4 19 13.76 19 8.77 19 5.03 15.87 2 12 2Zm0 9.5a2.75 2.75 0 1 1 0-5.5 2.75 2.75 0 0 1 0 5.5Z"/>
+            </svg>
+          </a>
+
+          <a class="icon-link" href="https://www.instagram.com/furutto" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+            <svg viewBox="0 0 24 24">
+              <path d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2Zm0 1.75A4 4 0 0 0 3.75 7.75v8.5a4 4 0 0 0 4 4h8.5a4 4 0 0 0 4-4v-8.5a4 4 0 0 0-4-4h-8.5Zm8.88 1.37a1.13 1.13 0 1 1 0 2.26 1.13 1.13 0 0 1 0-2.26ZM12 6.5A5.5 5.5 0 1 1 6.5 12 5.51 5.51 0 0 1 12 6.5Zm0 1.75A3.75 3.75 0 1 0 15.75 12 3.75 3.75 0 0 0 12 8.25Z"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- SP -->
+  <div class="mobile-layout">
+    <section class="mobile-hero">
+      <div class="mobile-brand">
+        <img src="logo.png" alt="FURUTTO logo" class="mobile-top-logo">
+      </div>
+
+      <div class="mobile-copy-wrap">
+        <h1 class="mobile-copy">
+          Enjoy<br>
+          Fruits,<br>
+          Slowly.
+        </h1>
+        <div class="mobile-copy-sub">
+          今夜はフルーツを楽しむ、<br>
+          少し贅沢な時間。
+        </div>
+      </div>
+
+      <div class="mobile-image">
+        <div class="slideshow">
+          <div class="slide"></div>
+          <div class="slide"></div>
+          <div class="slide"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="mobile-content">
+      <nav class="right-nav">
+        <a href="#sp-top">Top</a>
+        <a href="#sp-concept">Concept</a>
+        <a href="#sp-menu">Menu</a>
+        <a href="#sp-info">Info</a>
+        <a href="#sp-visit">Visit</a>
+      </nav>
+
+      <div class="right-section" id="sp-top">
+        <div class="section-label">Top</div>
+        <h2 class="section-title">
+          今日は、果実な気分。
+        </h2>
+        <p class="section-text">
+          Bar FURUTTOは、旬の果実を使った<br>
+          一杯とともに、楽しく過ごせる夜を<br>
+          お届けします。
+        </p>
+      </div>
+
+      <div class="right-section" id="sp-concept">
+        <div class="section-label">Concept</div>
+        <h2 class="section-title">
+          高級感があるのに、<br>
+          少しほっとする場所。
+        </h2>
+        <p class="section-text">
+          季節の果実と一杯を、ゆっくり味わう<br>
+          夜カフェのような時間を。気取らず<br>
+          上質に過ごせる時間を目指しています。
+        </p>
+      </div>
+
+      <div class="right-section" id="sp-menu">
+        <div class="section-label">Menu</div>
+
+        <div class="menu-list">
+          <div class="menu-item">
+            <div class="menu-name">いちごとラズベリー</div>
+            <div class="menu-price">C ¥1,700 / M ¥1,700</div>
+          </div>
+
+          <div class="menu-item">
+            <div class="menu-name">バナナと黒糖きなこ</div>
+            <div class="menu-price">C ¥1,500 / M ¥1,500</div>
+          </div>
+
+          <div class="menu-item">
+            <div class="menu-name">アボカドとコーヒー</div>
+            <div class="menu-price">C ¥1,500 / M ¥1,500</div>
+          </div>
+
+          <div class="menu-item">
+            <div class="menu-name">泡のソルティードッグ</div>
+            <div class="menu-price">C ¥1,500 / M ¥1,500</div>
+          </div>
+
+          <div class="menu-item">
+            <div class="menu-name">リンゴとマロン</div>
+            <div class="menu-price">C ¥1,600</div>
+          </div>
+        </div>
+
+        <div class="menu-notes">
+          <div>※C COCKTAIL（カクテル）<br>※M MOCKTAIL（ノンアルコール）</div>
+          <div>※その他アルコール、ソフトドリンクもございます。<br>スタッフまでお問い合わせください。</div>
+          <div class="menu-note-small">※季節によってメニューが変わりますのでご了承ください。</div>
+        </div>
+      </div>
+
+      <div class="right-section" id="sp-info">
+        <div class="section-label">Info</div>
+        <div class="info-list">
+          <div class="info-item">
+            <div class="info-head">Store Name</div>
+            <div class="info-body">Bar FURUTTO</div>
+          </div>
+
+          <div class="info-item">
+            <div class="info-head">Open</div>
+            <div class="info-body">20:00〜4:00</div>
+          </div>
+
+          <div class="info-item">
+            <div class="info-head">Closed</div>
+            <div class="info-body">日曜</div>
+          </div>
+
+          <div class="info-item">
+            <div class="info-head">Address</div>
+            <div class="info-body">〒910-0023</div>
+            <div class="info-body">福井県福井市順化２丁目２１−１８<br>加賀テナント C号</div>
+          </div>
+
+          <div class="info-item">
+            <div class="info-head">Phone</div>
+            <div class="info-body">080-4560-6103</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="right-section" id="sp-visit">
+        <div class="section-label">Visit</div>
+        <h2 class="section-title">
+          果実とともに過ごす、<br>
+          少しだけ特別な夜を。
+        </h2>
+
+        <p class="section-text">
+          ご来店の際はGoogleマップまたは<br>Instagramからご確認ください。
+        </p>
+
+        <div class="icon-links">
+          <a class="icon-link" href="https://maps.app.goo.gl/mGgB4Nc37iKYBHpp7" target="_blank" rel="noopener noreferrer" aria-label="Google Maps">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 2C8.13 2 5 5.03 5 8.77c0 4.99 5.68 11.63 6.05 12.05a1.25 1.25 0 0 0 1.9 0C13.32 20.4 19 13.76 19 8.77 19 5.03 15.87 2 12 2Zm0 9.5a2.75 2.75 0 1 1 0-5.5 2.75 2.75 0 0 1 0 5.5Z"/>
+            </svg>
+          </a>
+
+          <a class="icon-link" href="https://www.instagram.com/furutto" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+            <svg viewBox="0 0 24 24">
+              <path d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2Zm0 1.75A4 4 0 0 0 3.75 7.75v8.5a4 4 0 0 0 4 4h8.5a4 4 0 0 0 4-4v-8.5a4 4 0 0 0-4-4h-8.5Zm8.88 1.37a1.13 1.13 0 1 1 0 2.26 1.13 1.13 0 0 1 0-2.26ZM12 6.5A5.5 5.5 0 1 1 6.5 12 5.51 5.51 0 0 1 12 6.5Zm0 1.75A3.75 3.75 0 1 0 15.75 12 3.75 3.75 0 0 0 12 8.25Z"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    setTimeout(() => {
+      document.getElementById("loader").classList.add("fade-out");
+    }, 4000);
+  </script>
+
+</body>
+</html>
