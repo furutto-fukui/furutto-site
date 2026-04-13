@@ -2,9 +2,8 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bar FURUTTO</title>
-
+  <meta name="description" content="福井・片町にあるBar FURUTTO（フルット）。旬のフルーツカクテルと、気取らず上質に過ごせる夜の空間を提供するバーです。デートや夜カフェにも。">
+  <title>Bar FURUTTO（フルット）｜福井・片町のフルーツカクテルバー｜デート・夜カフェ</title>
   <style>
     * {
       box-sizing: border-box;
@@ -146,46 +145,51 @@
     }
 
     .slide {
-      position: absolute;
-      inset: 0;
-      background-size: cover;
-      background-position: center center;
-      opacity: 0;
-      animation: fade 18s infinite;
-      transition: opacity 2s ease;
-      transform: scale(1.02);
-    }
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center center;
+  opacity: 0;
+  animation: fade 24s infinite; /* 6秒 × 4枚 */
+  transform: scale(1.02);
+}
 
-    .slide:nth-child(1) {
-      background-image: url("img1.jpg");
-      animation-delay: 0s;
-    }
+/* 4枚に追加 */
+.slide:nth-child(1) {
+  background-image: url("img1.jpg");
+  animation-delay: 0s;
+}
 
-    .slide:nth-child(2) {
-      background-image: url("img2.jpg");
-      animation-delay: 6s;
-    }
+.slide:nth-child(2) {
+  background-image: url("img2.jpg");
+  animation-delay: 6s;
+}
 
-    .slide:nth-child(3) {
-      background-image: url("img3.jpg");
-      animation-delay: 12s;
-    }
+.slide:nth-child(3) {
+  background-image: url("img3.jpg");
+  animation-delay: 12s;
+}
 
-    @keyframes fade {
-      0% { opacity: 0; }
-      15% { opacity: 1; }
-      45% { opacity: 1; }
-      70% { opacity: 0; }
-      100% { opacity: 0; }
-    }
+.slide:nth-child(4) {
+  background-image: url("img4.jpg");
+  animation-delay: 18s;
+}
 
+/* フェードは少しだけ調整 */
+@keyframes fade {
+  0%   { opacity: 0; }
+  10%  { opacity: 1; }
+  40%  { opacity: 1; }
+  60%  { opacity: 0; }
+  100% { opacity: 0; }
+}
     .center-panel::after,
     .mobile-image::after {
       content: "";
       position: absolute;
       inset: 0;
       background:
-        linear-gradient(to bottom, rgba(0, 0, 0, 0.20), rgba(0, 0, 0, 0.10)),
+        linear-gradient(to bottom, rgba(0,0,0,0.20), rgba(0,0,0,0.10)),
         rgba(64, 42, 25, 0.10);
       pointer-events: none;
     }
@@ -202,7 +206,7 @@
       font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
     }
 
-    /* ===== 右スクロール部分 ===== */
+/* ===== 右スクロール部分 ===== */
     .right-panel {
       height: 100vh;
       overflow-y: auto;
@@ -215,7 +219,6 @@
     .right-panel::-webkit-scrollbar {
       width: 8px;
     }
-
     .right-panel::-webkit-scrollbar-thumb {
       background: rgba(47, 36, 29, 0.18);
       border-radius: 999px;
@@ -548,8 +551,9 @@
         <div class="slide"></div>
         <div class="slide"></div>
         <div class="slide"></div>
+        <div class="slide"></div>
       </div>
-      <div class="center-caption">Fruit Cafe & Bar</div>
+      <div class="center-caption">FURUTTO Cafe & Bar</div>
     </main>
 
     <section class="right-panel">
@@ -706,6 +710,7 @@
           <div class="slide"></div>
           <div class="slide"></div>
           <div class="slide"></div>
+          <div class="slide"></div>
         </div>
       </div>
     </section>
@@ -839,12 +844,11 @@
       </div>
     </section>
   </div>
-
-  <script>
-    setTimeout(() => {
-      document.getElementById("loader").classList.add("fade-out");
-    }, 4000);
-  </script>
-
+ <script>
+  setTimeout(() => {
+    document.getElementById("loader").classList.add("fade-out");
+    document.body.classList.add("loaded");
+  }, 3000);
+</script>
 </body>
 </html>
